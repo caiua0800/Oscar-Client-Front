@@ -11,6 +11,7 @@ import ContainerGeneral from './Components/Container/Container';
 import Contracts from './Components/Contracts/Contracts';
 import { LoadProvider } from './context/LoadContext';
 import Loading from './Components/Loading2/Loading2';
+import Chat from './Components/Chat/Chat';
 
 const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar {
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/wallet" element={<Carteira />} />
                 <Route path="/contracts" element={<Contracts />} />
+                <Route path="/Chat" element={<Chat />} />
               </Route>
             </Route>
           </Routes>

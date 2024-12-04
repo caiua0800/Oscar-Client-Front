@@ -22,6 +22,32 @@ export const helpers = {
         }
     },
 
+    formatRelativeDate: (inputDate) => {
+        const now = new Date();
+        const date = new Date(inputDate);
+
+        // Calcula a diferença em milissegundos
+        const diffInMilliseconds = now - date;
+        const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+
+        // Formata a hora e minuto
+        const hour = date.getHours().toString().padStart(2, '0');
+        const minute = date.getMinutes().toString().padStart(2, '0');
+
+        if (diffInDays < 1) {
+            // Se faz menos de um dia
+            return `${hour}:${minute}`;
+        } else if (diffInDays < 2) {
+            // Se faz mais de um dia, mas menos de dois
+            return `ontem ${hour}:${minute}`;
+        } else {
+            // Se faz mais de dois dias
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Adiciona 1 ao mês, pois em JavaScript começa em 0
+            return `${day}/${month} ${hour}:${minute}`;
+        }
+    },
+
     cadastro: async (cliente) => {
         if (cliente) {
             try {
@@ -513,7 +539,7 @@ export const helpers = {
             try {
                 const res = await axios.get(`${process.env.REACT_APP_BASE_ROUTE}purchase/verify/${contratoId}/${ticketId}`);
                 console.log(res.data);
-    
+
                 if (res.data.paid) {
                     console.log("Pagamento foi verificado e está pago!");
                     return true;

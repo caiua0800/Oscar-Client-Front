@@ -16,10 +16,7 @@ export default function Navbar({ setShowProfile, showProfile }) {
     wallet: "Carteira",
     dashboard: "Dashboard",
     contracts: "Contratos",
-    business: "Negócios",
-    company: "Empresa",
-    products: "Produtos",
-    investments: "Investimentos",
+    chat: "Chat"
   };
 
   const handleChange = (e) => {
@@ -54,10 +51,7 @@ export default function Navbar({ setShowProfile, showProfile }) {
             <option value="/dashboard" selected={navegacao === "Dashboard"}>Dashboard</option>
             <option value="/wallet" selected={navegacao === "Carteira"}>Carteira</option>
             <option value="/contracts" selected={navegacao === "Contratos"}>Contratos</option>
-            <option value="/business" selected={navegacao === "Negócios"}>Negócios</option>
-            <option value="/company" selected={navegacao === "Empresa"}>Empresa</option>
-            <option value="/products" selected={navegacao === "Produtos"}>Produtos</option>
-            <option value="/investments" selected={navegacao === "Investimentos"}>Investimentos</option>
+            <option value="/chat" selected={navegacao === "Chat"}>Chat</option>
           </select>
         </S.NavPartTwo>
       </S.Navbar>
