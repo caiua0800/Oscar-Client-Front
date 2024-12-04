@@ -34,6 +34,7 @@ const Select = styled.select`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+
 `;
 
 const TableHeader = styled.th`

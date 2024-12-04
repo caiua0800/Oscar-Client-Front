@@ -38,14 +38,15 @@ export default function Contracts() {
                             </ul>
 
                             <div className="valorUnitario">
-                                <span className="valor">R$100,00</span>
+                                <span className="valor">R$1,00</span>
                             </div>
 
                             <button className="selecionarBtn" onClick={() => setPageContractShow({
-                                uniValue: 100,
+                                uniValue: 1,
                                 daysToFirstWithdraw: 90,
                                 duration: 36,
-                                finalIncome: 200
+                                finalIncome: 200,
+                                productName: "Contrato Introducer"
                             })}>Comprar</button>
                         </S.Card>
 
@@ -70,7 +71,8 @@ export default function Contracts() {
                                 uniValue: 300,
                                 daysToFirstWithdraw: 60,
                                 duration: 48,
-                                finalIncome: 250
+                                finalIncome: 250,
+                                productName: "Contrato Colaborative"
                             })}>Comprar</button>
                         </S.Card>
 
@@ -95,7 +97,8 @@ export default function Contracts() {
                                 uniValue: 1500,
                                 daysToFirstWithdraw: 60,
                                 duration: 60,
-                                finalIncome: 400
+                                finalIncome: 400,
+                                productName: "Contrato Advanced"
                             })}>Comprar</button>
                         </S.Card>
                     </S.ProductsList>

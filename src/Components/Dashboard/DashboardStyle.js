@@ -158,11 +158,18 @@ export const RowTwo = styled.div`
 
         .increase-arrow{
             position: absolute;
-            top: 35%;
+            top: 55%;
             left: 20px;
             width: 40px;
             height: 50px;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: .3s;
             filter: drop-shadow(0 0 5px rgba(100, 255, 10, 0.8));
+
+            &:hover{
+                opacity: 1;
+            }
         }
     }
 
@@ -179,11 +186,13 @@ export const RowThree = styled.div`
     grid-template-columns: 1fr 1fr; 
     gap: 20px;
     margin-top: 40px;
-    height: 300px;
+    height: max-content;
     box-sizing: border-box;
 
     .Box{
         width: 100%;
+        height: 100%;
+        overflow: auto;
         background: radial-gradient(rgba(53, 62, 83, 1), rgba(39, 42, 59, 1));
         position: relative;
 

@@ -9,17 +9,19 @@ import TransactionsTable from '../Tabelas/ContractsTable';
 import { AuthContext } from '../../context/AuthContext';
 import { helpers } from '../../Helpers/helpers';
 import WithdrawalsTable from '../Tabelas/WithDrawnsTable';
+import QrCodeContainer from '../QrCodeContainer/QrCodeContainer';
 
 
 export default function Dashboard() {
   const { clientData } = useContext(AuthContext)
   const [noticiasAtivas, setNoticiasAtivas] = useState(true);
   const [tableType, setTableType] = useState(0);
-
-  console.log(clientData);
+  const [qrSelected, setQrSelected] = useState(null);
 
   return (
     <>
+
+      <QrCodeContainer ticketInfo={qrSelected} setTicketInfo={setQrSelected} />
       <S.Nav>
         <p>Dashboard</p>
         <input placeholder='Pesquisar' />
@@ -114,7 +116,7 @@ export default function Dashboard() {
         </select>
         <div className='TableContainer'>
           {parseFloat(tableType) === 0 && (
-            <TransactionsTable />
+            <TransactionsTable setQrSelected={setQrSelected} />
           )}
 
           {parseFloat(tableType) === 1 && (

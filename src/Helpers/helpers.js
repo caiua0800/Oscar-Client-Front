@@ -1,5 +1,6 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import { startLoading, stopLoading, stopLoadingDelay } from "../context/LoadContext";
 
 export const helpers = {
 
@@ -63,7 +64,7 @@ export const helpers = {
     handlePurchaseStatus: (status) => {
         switch (status) {
             case 1:
-                return <span style={{ color: "rgba(0, 150, 255, 1" }}>Pendente</span>
+                return <span style={{ color: "rgba(0, 150, 255, 1" }}>Pendente, Clique Aqui</span>
             case 2:
                 return <span style={{ color: "rgba(100, 255, 0, 1" }}>Valorizando</span>
             case 3:
@@ -309,7 +310,7 @@ export const helpers = {
             contrato.status = 1;
 
             try {
-                const res = await axios.post(`http://localhost:5255/api/purchase`, contrato);
+                const res = await axios.post(`${process.env.REACT_APP_BASE_ROUTE}purchase`, contrato);
                 if (res.status === 201) {
                     alert("Contrato criado com sucesso.");
                     return res.data;
@@ -486,6 +487,45 @@ export const helpers = {
         "R$300.000,00 à R$500.000,00",
         "R$500.000,00 à R$1.000.000,00",
         "Mais de R$1.000.000,00",
-    ]
+    ],
+
+    cancelContractAsync: async (contratoId) => {
+        if (contratoId) {
+            try {
+                const res = await axios.put(`${process.env.REACT_APP_BASE_ROUTE}purchase/${contratoId}/3`);
+                if (res.status === 204) {
+                    return true;
+                } else {
+                    console.log(res);
+                    return false;
+                }
+            } catch (err) {
+                console.log(err);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    verifyPayment: async (contratoId, ticketId) => {
+        if (contratoId) {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_BASE_ROUTE}purchase/verify/${contratoId}/${ticketId}`);
+                console.log(res.data);
+    
+                if (res.data.paid) {
+                    console.log("Pagamento foi verificado e está pago!");
+                    return true;
+                } else {
+                    console.log("Pagamento não foi encontrado ou não foi verificado.");
+                    return false;
+                }
+            } catch (err) {
+                console.error("Erro ao verificar pagamento:", err);
+                return false;
+            }
+        }
+    }
 
 }

@@ -2,17 +2,19 @@ import React, { useState, useEffect, useContext } from "react";
 import * as S from "./ModalDeSaqueStyle";
 import { helpers } from "../../../Helpers/helpers";
 import { AuthContext } from "../../../context/AuthContext";
+import { useLoad } from "../../../context/LoadContext";
 
 export default function ModalDeSaque({ onClose }) {
     const { clientData, refreshClientData } = useContext(AuthContext);
     const [valorDesejado, setValorDesejado] = useState(0);
     const [corDoInput, setCorDoInput] = useState("white");
+    const { startLoading, stopLoading, stopLoadingDelay } = useLoad();
 
     useEffect(() => {
         if (valorDesejado && valorDesejado.trim() !== "") {
             if (valorDesejado <= 0) {
                 setCorDoInput("red");
-            } else if (valorDesejado <= clientData.amountAvailableToWithdraw && valorDesejado > 0) {
+            } else if (parseFloat(valorDesejado) <= parseFloat(clientData.amountAvailableToWithdraw)) {
                 setCorDoInput("green");
             } else {
                 setCorDoInput("red");
@@ -21,6 +23,12 @@ export default function ModalDeSaque({ onClose }) {
             setCorDoInput("white");
         }
     }, [valorDesejado, clientData.amountAvailableToWithdraw]);
+
+    const handleWithdraw = async () => {
+        startLoading();
+        helpers.realizarSaque(clientData, valorDesejado, onClose, refreshClientData);
+        stopLoadingDelay();
+    }
 
     return (
         <S.ModalContainer>
@@ -58,7 +66,7 @@ export default function ModalDeSaque({ onClose }) {
                     </span>
                 </S.SelecioneValor>
 
-                <S.BotaoSaque onClick={() => helpers.realizarSaque(clientData, valorDesejado, onClose, refreshClientData)}>Realizar Solicitação</S.BotaoSaque>
+                <S.BotaoSaque onClick={handleWithdraw}>Realizar Solicitação</S.BotaoSaque>
             </S.ModalContentBox>
         </S.ModalContainer>
     );

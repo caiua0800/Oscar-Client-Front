@@ -74,7 +74,7 @@ const PaginationButton = styled.button`
     background-color: #555;
   }
 `;
-const TransactionsTable = () => {
+const TransactionsTable = ({ setQrSelected }) => {
   const { clientData } = useContext(AuthContext);
   const [contratos, setContratos] = useState([]);
   const [sortedDirection, setSortedDirection] = useState("asc");
@@ -136,6 +136,23 @@ const TransactionsTable = () => {
 
   const totalPages = Math.ceil(contratos.length / itemsPerPage);
 
+  const handleSelectQr = (contr) => {
+    if (contr.status === 1 && contr.ticketPayment) {
+      var obj = {
+        ticketPayment: contr.ticketPayment,
+        qrCode: contr.qrCode,
+        qrCodeBase64: contr.qrCodeBase64,
+        ticketId: contr.ticketId,
+        idContract: contr.purchaseId,
+        amount: contr.amountPaid,
+        paid: false
+      }
+      console.log(obj)
+      setQrSelected(obj)
+    }
+  }
+
+
   return (
     <TableContainer>
       <Title>Tabela de Contratos</Title>
@@ -149,7 +166,6 @@ const TransactionsTable = () => {
           <option value="totalPrice">VALOR TOTAL</option>
           <option value="currentIncome">LUCRO OBTIDO</option>
           <option value="purchaseId">ID COMPRA</option>
-          {/* Adicione outros campos se necessário */}
         </Select>
       </FilterContainer>
       <Table>
@@ -169,7 +185,7 @@ const TransactionsTable = () => {
               <TableCell>{helpers.formatDateToBrazilianFormat(contrato.purchaseDate)}</TableCell>
               <TableCell>R${helpers.formatToBrazilianCurrency(contrato.totalPrice)}</TableCell>
               <TableCell>R${helpers.formatToBrazilianCurrency(contrato.currentIncome)}</TableCell>
-              <TableCell>{helpers.handlePurchaseStatus(contrato.status)}</TableCell>
+              <TableCell style={{cursor: contrato.status === 1 ? "pointer" : "default"}} onClick={() => handleSelectQr(contrato)}>{helpers.handlePurchaseStatus(contrato.status)}</TableCell>
             </TableRow>
           ))}
         </tbody>

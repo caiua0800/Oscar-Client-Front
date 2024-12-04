@@ -4,6 +4,7 @@ import { helpers } from "../../../Helpers/helpers";
 import ReactToPrint from 'react-to-print';
 import Loading from "../../Loading/Loading";
 import { AuthContext } from "../../../context/AuthContext";
+import { useLoad } from "../../../context/LoadContext";
 
 class ContractDocument extends React.Component {
     render() {
@@ -52,6 +53,7 @@ export default function ContractPage({ contract, onClose }) {
     const { clientData, refreshClientData } = useContext(AuthContext);
     const [iAgree, setIAgree] = useState("");
     const componentRef = useRef();
+    const { startLoading, stopLoading, stopLoadingDelay } = useLoad();
 
     const handleIncrementor = (type) => {
         if (type === "-") {
@@ -74,8 +76,9 @@ export default function ContractPage({ contract, onClose }) {
             totalValue,
             duration: contract.duration,
             finalIncome,
-            uniValue: contract.uniValue, // Adiciona o valor unitário para uso no PDF
+            uniValue: contract.uniValue,
         };
+
 
         setTimeout(() => {
             setLoad(false);
@@ -87,11 +90,13 @@ export default function ContractPage({ contract, onClose }) {
         if (iAgree) {
             const currentDate = new Date();
             const quantidadeMeses = parseInt(contract.duration);
+            const product_name = parseInt(contract.productName);
             currentDate.setMonth(currentDate.getMonth() + quantidadeMeses);
             const brasiliaOffset = -3;
             const brasiliaDate = new Date(currentDate.getTime() + brasiliaOffset * 60 * 60 * 1000);
             const endContractDate = brasiliaDate.toISOString();
 
+            startLoading();
             const res = await helpers.novoContrato({
                 clientId: clientData.id,
                 quantity: quantity,
@@ -99,14 +104,17 @@ export default function ContractPage({ contract, onClose }) {
                 percentageProfit: parseFloat(contract.finalIncome) / 100,
                 unityPrice: parseFloat(contract.uniValue),
                 endContractDate: endContractDate,
+                productName: contract.productName
             });
-
+                    
+   
             if (res) {
                 console.log("Criado com sucesso");
                 await refreshClientData();
                 onClose();
             } else {
                 console.log("Erro ao criar");
+                stopLoadingDelay();
             }
         } else {
             alert("Você precisa concordar com os termos do contrato.");
@@ -197,8 +205,6 @@ export default function ContractPage({ contract, onClose }) {
                                 <span>Selecione o método de pagamento</span>
                                 <select>
                                     <option>PIX</option>
-                                    <option>BOLETO</option>
-                                    <option>CARTÃO DE CRÉDITO</option>
                                 </select>
 
                                 <button onClick={handleBuy}>REALIZAR COMPRA</button>

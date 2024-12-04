@@ -3,11 +3,13 @@ import * as S from "./NavbarStyle";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useLoad } from "../../context/LoadContext";
 
 export default function Navbar({ setShowProfile, showProfile }) {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [navegacao, setNavegacao] = useState("");
+  const { startLoading, stopLoadingDelay } = useLoad();
 
   // Mapeamento de rotas para nomes amigáveis
   const navMap = {
@@ -21,9 +23,11 @@ export default function Navbar({ setShowProfile, showProfile }) {
   };
 
   const handleChange = (e) => {
+    startLoading()
     const targetValue = e.target.value;
     navigate(targetValue);
     setNavegacao(targetValue);
+    stopLoadingDelay()
   };
 
   useEffect(() => {
