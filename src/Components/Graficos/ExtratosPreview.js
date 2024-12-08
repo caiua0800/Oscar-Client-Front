@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import RentableTransactionsTable from '../Tabelas/RentableContractsTable';
+import ExtractsTable from '../Tabelas/ExtractsTable';
+
 
 const FunnelContainer = styled.div`
   width: 100%;
@@ -67,15 +69,16 @@ const Title = styled.h1`
   }
 `;
 
-function SalesFunnel() {
+function ExtratosPreview() {
+
 
   return (
   
     <FunnelContainer>
-      <Title>LUCROS DISPONÍVEL POR CONTRATO</Title>
-      <RentableTransactionsTable />
+      <Title>EXTRATOS DA CONTA</Title>
+      <ExtractsTable />
     </FunnelContainer>
   );
 }
 
-export default SalesFunnel;
+export default ExtratosPreview;

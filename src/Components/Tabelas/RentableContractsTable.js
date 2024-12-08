@@ -14,6 +14,10 @@ const TableContainer = styled.div`
 
 const Title = styled.h2`
   margin-bottom: 20px;
+
+  @media(max-width: 1000px){
+    font-size: 18px;
+  }
 `;
 
 const FilterContainer = styled.div`
@@ -42,11 +46,19 @@ const TableHeader = styled.th`
   padding: 10px;
   border-bottom: 2px solid #444;
   cursor: pointer;
+
+  @media(max-width: 1100px){
+    font-size: 12px;
+  }
 `;
 
 const TableRow = styled.tr`
   &:nth-child(even) {
     background-color: rgba(53, 56, 79, 1);
+  }
+
+  @media(max-width: 1100px){
+    font-size: 12px;
   }
 `;
 
@@ -82,7 +94,7 @@ const RentableTransactionsTable = () => {
   const [sortedDirection, setSortedDirection] = useState("asc");
   const [sortedBy, setSortedBy] = useState("purchaseDate");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 3;
 
   useEffect(() => {
     if (clientData && clientData.walletExtract && clientData.walletExtract.purchases) {

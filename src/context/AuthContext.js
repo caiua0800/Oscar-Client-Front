@@ -7,7 +7,9 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [clientData, setClientData] = useState(null);
+    const [clientExtracts, setClientExtracts] = useState(null);
     const GET_CLIENT_DATA_ROUTE = process.env.REACT_APP_BASE_ROUTE + process.env.REACT_APP_CLIENT_DATAILS;
+    const GET_CLIENT_EXTRACTS_ROUTE = process.env.REACT_APP_BASE_ROUTE + "extract/client/";
     const [isInitialized, setIsInitialized] = useState(false);
     const { startLoading, stopLoading, stopLoadingDelay } = useLoad();
 
@@ -28,7 +30,7 @@ const AuthProvider = ({ children }) => {
             const response = await axios.get(`${GET_CLIENT_DATA_ROUTE}${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
+            await obterExtratos(token, id)
             const Client = response.data.client;
 
             var totalInvestimento = Client.blockedBalance;
@@ -65,6 +67,24 @@ const AuthProvider = ({ children }) => {
         }
     };
 
+    const obterExtratos = async (token, id) => {
+        startLoading()
+        axios.get(`${GET_CLIENT_EXTRACTS_ROUTE}${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(res => {
+            if (res.data){
+                stopLoading()
+                setClientExtracts(res.data)
+                console.log(res.data)
+                return res.data;
+            }
+        }).catch(err => {
+            stopLoading()
+            return null;
+            console.log(err)
+        })
+    }
+
     // Nova função para atualizar os dados do cliente
     const refreshClientData = async () => {
         if (token) {
@@ -87,12 +107,12 @@ const AuthProvider = ({ children }) => {
             sessionStorage.setItem('authToken', receivedToken);
             sessionStorage.setItem('userId', cpf);
             await fetchClientData(receivedToken, cpf);
-            setTimeout(stopLoading ,1200);
+            setTimeout(stopLoading, 1200);
             return true;
         } catch (error) {
             console.error("Erro ao logar:", error);
             setToken(null);
-            setTimeout(stopLoading ,1200);
+            setTimeout(stopLoading, 1200);
             return false; // Indica falha no login
         }
     };
@@ -103,11 +123,11 @@ const AuthProvider = ({ children }) => {
         setClientData(null);
         sessionStorage.removeItem('authToken');
         sessionStorage.removeItem('userId');
-        setTimeout(stopLoading , 500);
+        setTimeout(stopLoading, 500);
     };
 
     return (
-        <AuthContext.Provider value={{ token, clientData, login, logout, isInitialized, refreshClientData }}>
+        <AuthContext.Provider value={{ token, clientData, clientExtracts, login, logout, isInitialized, refreshClientData }}>
             {children}
         </AuthContext.Provider>
     );

@@ -99,7 +99,7 @@ export const RowTwo = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; 
     gap: 20px;
-    height: 220px;
+    // height: 240px;
     box-sizing: border-box;
     position: relative;
 
@@ -109,15 +109,17 @@ export const RowTwo = styled.div`
         display: grid;
         grid-template-rows: 1fr 2fr 1fr;
         padding: 10px;
+        height: max-content;
         box-sizing: border-box;
         position: relative;
+        overflow: hidden;
 
         .header{
             display: grid;
             grid-template-columns: 5fr 1fr;
             color: white;
-            font-size: 26px;
-            align-items: center;
+            font-size: 18px;
+            // align-items: center;
 
             img{
                 width: 20px;
@@ -171,9 +173,13 @@ export const RowTwo = styled.div`
     }
 
     @media (max-width: 1100px){
-        display: flex;
-        flex-wrap: wrap;
-        min-height: max-content;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr
+    }
+
+    @media (max-width: 600px){
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
     }
 `;
 
@@ -182,16 +188,17 @@ export const RowThree = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr; 
     gap: 20px;
-    margin-top: 40px;
-    height: max-content;
+    // margin-top: 40px;
+    // height: 400px;
     box-sizing: border-box;
 
     .Box{
         width: 100%;
-        height: 100%;
+        height: max-content;
         overflow: auto;
         background: radial-gradient(rgba(53, 62, 83, 1), rgba(39, 42, 59, 1));
         position: relative;
+        
 
         span{
             position: absolute;
@@ -217,9 +224,9 @@ export const RowThree = styled.div`
     }
 
     @media (max-width: 1100px){
-        display: flex;
-        flex-wrap: wrap;
-        min-height: max-content;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+
     }
 `;
 
@@ -646,7 +653,6 @@ export const TableColumns = styled.div`
         font-size: 22px;
     }
 `;
-
 
 export const WrapIt = styled.div`
     width: 100%;

@@ -4,12 +4,13 @@ import ContainerGeneral from '../Container/Container';
 import GraficoPrincipal from '../Graficos/Principal';
 import Noticias from '../Noticias/Noticias';
 import Segundo from '../Graficos/Segundo';
-import Terceiro from '../Graficos/Terceito';
+import Terceiro from '../Graficos/ExtratosPreview';
 import TransactionsTable from '../Tabelas/ContractsTable';
 import { AuthContext } from '../../context/AuthContext';
 import { helpers } from '../../Helpers/helpers';
 import WithdrawalsTable from '../Tabelas/WithDrawnsTable';
 import QrCodeContainer from '../QrCodeContainer/QrCodeContainer';
+import ExtratosPreview from '../Graficos/ExtratosPreview';
 
 
 export default function Dashboard() {
@@ -18,9 +19,9 @@ export default function Dashboard() {
   const [tableType, setTableType] = useState(0);
   const [qrSelected, setQrSelected] = useState(null);
 
+
   return (
     <>
-
       <QrCodeContainer ticketInfo={qrSelected} setTicketInfo={setQrSelected} />
       <S.Nav>
         <p>Dashboard</p>
@@ -102,10 +103,9 @@ export default function Dashboard() {
           <Segundo />
         </div>
         <div className='Box'>
-          <Terceiro />
-          <span>Clique aqui para ver mais</span>
+          <ExtratosPreview />
+          {/* <span>Clique aqui para ver mais</span> */}
           <img alt='config icon' src='config-icon.png' />
-
         </div>
       </S.RowThree>
 
