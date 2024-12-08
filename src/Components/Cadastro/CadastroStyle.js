@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const CadastroContent = styled.div`
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,8 +11,8 @@ export const CadastroContent = styled.div`
     background-image: url("fundo-escuro.jpg");
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100vh;
-
+    overflow-y: auto;
+    
     .Title{
         margin: 0;
         text-align: center;
