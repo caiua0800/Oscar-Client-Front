@@ -1,9 +1,7 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
-import { startLoading, stopLoading, stopLoadingDelay } from "../context/LoadContext";
 
 export const helpers = {
-
     formatToBrazilianCurrency: (value) => {
         try {
             // Tenta converter o valor para um número, caso seja uma string
@@ -204,109 +202,37 @@ export const helpers = {
     },
 
     realizarSaque: async (client, amount, onClose, refreshClientData) => {
-        if (client && client.walletExtract.purchases && amount && amount > 0) {
-            var compras = client.walletExtract.purchases;
-            var comprasDisponiveis = [];
-            const valoresEIds = [];
+        if (client && amount && amount > 0) {
 
-            compras.forEach(compra => {
-                if (helpers.isFirstIncreasementMoreThan90DaysOld(compra))
-                    comprasDisponiveis.push(compra);
-            })
+            try {
+                const res = await axios.post(`${process.env.REACT_APP_BASE_ROUTE}withdrawal`, {
+                    clientId: client.id,
+                    amountWithdrawn: parseFloat(amount)
+                });
 
-            var valorASacar = amount;
-            let res1 = false;
-            let res2 = false;
-
-            if (client.balance - client.blockedBalance > 0) {
-                if (comprasDisponiveis.length > 0) {
-                    comprasDisponiveis.forEach(c => {
-                        if ((c.currentIncome - c.amountWithdrawn) >= 1 && valorASacar > 0) {
-                            var valorDisponivelContrato = (c.currentIncome - c.amountWithdrawn);
-                            if (valorDisponivelContrato >= valorASacar) {
-                                valoresEIds.push({ id: c.purchaseId, valor: valorASacar });
-                                valorASacar = 0;
-                            } else if (valorDisponivelContrato < valorASacar && valorDisponivelContrato >= 0) {
-                                valoresEIds.push({ id: c.purchaseId, valor: valorDisponivelContrato });
-                                valorASacar -= valorDisponivelContrato;
-                            }
-                        }
-                    })
-
-                    if (valoresEIds.length > 0) {
-                        try {
-                            for (const contract of valoresEIds) {
-                                try {
-                                    const res = await axios.post(`${process.env.REACT_APP_BASE_ROUTE}withdrawal`, {
-                                        clientId: client.id,
-                                        amountWithdrawn: contract.valor,
-                                        itemId: contract.id
-                                    });
-
-                                    if (res.status === 201) {
-                                        res1 = true;
-                                        console.log("Saque criado com sucesso.", res.data);
-                                    } else {
-                                        console.log("Erro ao criar saque:", res);
-                                        alert("Erro ao criar saque.");
-                                        return null;
-                                    }
-                                } catch (error) {
-                                    console.log("Error ao processar o saque para o contrato:", contract.purchaseId, error);
-                                    const errorMessage = error.response && error.response.data
-                                        ? error.response.data
-                                        : 'Erro ao criar saque.';
-
-                                    const acharMensagem = "Não foi possível realizar o saque: Saldo bloqueado.";
-                                    if (errorMessage.toLowerCase().includes(acharMensagem.toLowerCase())) {
-                                        alert(acharMensagem);
-                                    } else {
-                                        alert(errorMessage);
-                                    }
-                                }
-                            }
-                            await refreshClientData();
-                            onClose();
-                            return true;
-                        } catch (error) {
-                            console.log("Erro geral ao realizar o saque:", error);
-                            alert("Um erro inesperado ocorreu ao tentar realizar o saque.");
-                            return null;
-                        }
-                    }
-
-                }
-
-                if (valorASacar > 0) {
-                    const res = await axios.post(`${process.env.REACT_APP_BASE_ROUTE}withdrawal/extraBalance`, {
-                        clientId: client.id,
-                        amountWithdrawn: valorASacar,
-                        itemId: ""
-                    });
-
-                    valorASacar = 0;
-
-                    if (res.status === 201) {
-                        res2 = true;
-                        console.log("Saque criado com sucesso.", res.data);
-                        alert("Saque criado com sucesso.", res.data);
-                        onClose();
-                        await refreshClientData();
-                        return;
-                    } else {
-                        console.log("Erro ao criar saque:", res);
-                        alert("Erro ao criar saque.");
-                        return null;
-                    }
-                }
-
-                if (res1 && res2) {
-                    alert("Saque Criado com sucesso.");
+                if (res.status === 201) {
+                    console.log("Saque criado com sucesso.", res.data);
+                    await refreshClientData();
                     onClose();
-                    return;
+                    return true;
+                } else {
+                    onClose();
+                    console.log("Erro ao criar saque:", res);
+                    return null;
+                }
+            } catch (error) {
+                console.log("Error ao processar o saque:", error);
+                const errorMessage = error.response && error.response.data
+                    ? error.response.data
+                    : 'Erro ao criar saque.';
+
+                const acharMensagem = "Não foi possível realizar o saque: Saldo bloqueado.";
+                if (errorMessage.toLowerCase().includes(acharMensagem.toLowerCase())) {
+                    alert(acharMensagem);
+                } else {
+                    alert(errorMessage);
                 }
             }
-
         } else {
             return false;
         }

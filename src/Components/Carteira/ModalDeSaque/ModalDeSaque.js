@@ -26,7 +26,12 @@ export default function ModalDeSaque({ onClose }) {
 
     const handleWithdraw = async () => {
         startLoading();
-        helpers.realizarSaque(clientData, valorDesejado, onClose, refreshClientData);
+        const res = await helpers.realizarSaque(clientData, valorDesejado, onClose, refreshClientData);
+        if(res){
+            alert("Saque Solicitado com Sucesso! 👍🏻");
+        }else{
+            alert("Erro ao solicitar saque! 👎🏻");
+        }
         stopLoadingDelay();
     }
 

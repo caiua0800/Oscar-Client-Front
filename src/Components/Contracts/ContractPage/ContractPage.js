@@ -120,6 +120,7 @@ export default function ContractPage({ contract, onClose }) {
             alert("Você precisa concordar com os termos do contrato.");
         }
     }
+    
     return (
         <>
             <Loading load={load} />
