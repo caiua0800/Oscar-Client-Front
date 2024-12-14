@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import * as S from "./ContractsStyle";
 import ContractPage from "./ContractPage/ContractPage";
+import { AuthContext } from "../../context/AuthContext";
+import { helpers } from "../../Helpers/helpers";
 
 export default function Contracts() {
+    const { modeloDeContratos } = useContext(AuthContext)
 
     const [pageContractShow, setPageContractShow] = useState(null);
 
     const onClose = () => {
         setPageContractShow(null);
     }
+
+    console.log(modeloDeContratos)
 
     return (
         <>
@@ -24,83 +29,35 @@ export default function Contracts() {
                     <h2>Produtos mais vendidos 🔥</h2>
 
                     <S.ProductsList>
-                        <S.Card>
-                            <p className="title">Contrato Introducer 📄</p>
+                        {modeloDeContratos && modeloDeContratos.map((model, index) => (
+                            <>
+                                <S.Card>
+                                    <p className="title">{model.title} 📄</p>
 
-                            <div className="productImage">
-                                <img src="introducer.jpeg.webp" />
-                            </div>
+                                    <div className="productImage">
+                                        <img src="introducer.jpeg.webp" />
+                                    </div>
 
-                            <ul className="infoContract">
-                                <li className="info">Lucro de 200%</li>
-                                <li className="info">Saque liberado após 90 dias</li>
-                                <li className="info">Duração de 3 anos</li>
-                            </ul>
+                                    <ul className="infoContract">
+                                        <li className="info">Lucro de {model.gain*100}%</li>
+                                        <li className="info">Saque liberado após {model.firstWithdraw} dias</li>
+                                        <li className="info">Duração de {model.duration} meses</li>
+                                    </ul>
 
-                            <div className="valorUnitario">
-                                <span className="valor">R$1,00</span>
-                            </div>
+                                    <div className="valorUnitario">
+                                        <span className="valor">R${helpers.formatToBrazilianCurrency(model.value || 0)}</span>
+                                    </div>
 
-                            <button className="selecionarBtn" onClick={() => setPageContractShow({
-                                uniValue: 1,
-                                daysToFirstWithdraw: 90,
-                                duration: 36,
-                                finalIncome: 200,
-                                productName: "Contrato Introducer"
-                            })}>Comprar</button>
-                        </S.Card>
-
-                        <S.Card>
-                            <p className="title">Contrato Colaborative 📄</p>
-
-                            <div className="productImage">
-                                <img src="introducer.jpeg.webp" />
-                            </div>
-
-                            <ul className="infoContract">
-                                <li className="info">Lucro de 250%</li>
-                                <li className="info">Saque liberado após 60 dias</li>
-                                <li className="info">Duração de 4 anos</li>
-                            </ul>
-
-                            <div className="valorUnitario">
-                                <span className="valor">R$300,00</span>
-                            </div>
-
-                            <button className="selecionarBtn" onClick={() => setPageContractShow({
-                                uniValue: 300,
-                                daysToFirstWithdraw: 60,
-                                duration: 48,
-                                finalIncome: 250,
-                                productName: "Contrato Colaborative"
-                            })}>Comprar</button>
-                        </S.Card>
-
-                        <S.Card>
-                            <p className="title">Contrato Advanced 📄</p>
-
-                            <div className="productImage">
-                                <img src="introducer.jpeg.webp" />
-                            </div>
-
-                            <ul className="infoContract">
-                                <li className="info">Lucro de 400%</li>
-                                <li className="info">Saque liberado após 60 dias</li>
-                                <li className="info">Duração de 5 anos</li>
-                            </ul>
-
-                            <div className="valorUnitario">
-                                <span className="valor">R$1.500,00</span>
-                            </div>
-
-                            <button className="selecionarBtn" onClick={() => setPageContractShow({
-                                uniValue: 1500,
-                                daysToFirstWithdraw: 60,
-                                duration: 60,
-                                finalIncome: 400,
-                                productName: "Contrato Advanced"
-                            })}>Comprar</button>
-                        </S.Card>
+                                    <button className="selecionarBtn" onClick={() => setPageContractShow({
+                                        uniValue: model.value || 0,
+                                        daysToFirstWithdraw: model.firstWithdraw,
+                                        duration: model.duration,
+                                        finalIncome: model.gain*100,
+                                        productName: model.title
+                                    })}>Comprar</button>
+                                </S.Card>
+                            </>
+                        ))}
                     </S.ProductsList>
                 </S.ProductsContainerArea>
 

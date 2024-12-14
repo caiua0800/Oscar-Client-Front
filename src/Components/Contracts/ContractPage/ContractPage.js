@@ -32,7 +32,7 @@ class ContractDocument extends React.Component {
                 <p><strong>Duração do Investimento:</strong> {contract.duration} meses</p>
 
                 <h2>Condições do Contrato:</h2>
-                <p>O valor investido valorizará em <strong>{contract.finalIncome}%</strong> ao longo do período de <strong>{contract.duration} meses</strong>.</p>
+                <p>O valor investido valorizará em <strong>{contract.finalIncome}</strong> ao longo do período de <strong>{contract.duration} meses</strong>.</p>
 
                 <p>Os saques são liberados após um período de {contract.daysToFirstWithdraw} dias após a confirmação do investimento.</p>
                 <p>Penalidades por rescisão antecipada: Se o comprador decidir rescindir este contrato antes do término, uma taxa de 10% do valor total será aplicada.</p>
@@ -134,14 +134,14 @@ export default function ContractPage({ contract, onClose }) {
                     <S.ModalTitle>PÁGINA DO CONTRATO</S.ModalTitle>
                     <S.SelectedContractPart>
                         <S.Card>
-                            <p className="title">Contrato Advanced 📄</p>
+                            <p className="title">{contract.productName} 📄</p>
                             <div className="productImage">
                                 <img src="introducer.jpeg.webp" alt="Imagem do Produto" />
                             </div>
                             <ul className="infoContract">
                                 <li className="info">Lucro de {contract.finalIncome}%</li>
                                 <li className="info">Saque liberado após {contract.daysToFirstWithdraw} dias</li>
-                                <li className="info">Duração de {contract.duration / 12} anos</li>
+                                <li className="info">Duração de {contract.duration} meses</li>
                             </ul>
                             <div className="valorUnitario">
                                 <span className="valor">R${helpers.formatToBrazilianCurrency(contract.uniValue)}</span>

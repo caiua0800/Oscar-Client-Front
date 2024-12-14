@@ -11,14 +11,18 @@ const AuthProvider = ({ children }) => {
     const GET_CLIENT_DATA_ROUTE = process.env.REACT_APP_BASE_ROUTE + process.env.REACT_APP_CLIENT_DATAILS;
     const GET_CLIENT_EXTRACTS_ROUTE = process.env.REACT_APP_BASE_ROUTE + "extract/client/";
     const [isInitialized, setIsInitialized] = useState(false);
+    const [modeloDeContratos, setModeloDeContratos] = useState([]);
     const { startLoading, stopLoading, stopLoadingDelay } = useLoad();
 
     useEffect(() => {
         const storedToken = sessionStorage.getItem('authToken');
         const storedId = sessionStorage.getItem('userId');
+        
         if (storedToken && storedId) {
             setToken(storedToken);
-            fetchClientData(storedToken, storedId).finally(() => setIsInitialized(true));
+            fetchClientData(storedToken, storedId)
+                .then(() => obterModeloDeContratos(storedToken))
+                .finally(() => setIsInitialized(true));
         } else {
             setIsInitialized(true);
         }
@@ -72,10 +76,9 @@ const AuthProvider = ({ children }) => {
         axios.get(`${GET_CLIENT_EXTRACTS_ROUTE}${id}`, {
             headers: { Authorization: `Bearer ${token}` }
         }).then(res => {
-            if (res.data){
+            if (res.data) {
                 stopLoading()
                 setClientExtracts(res.data)
-                console.log(res.data)
                 return res.data;
             }
         }).catch(err => {
@@ -85,12 +88,31 @@ const AuthProvider = ({ children }) => {
         })
     }
 
-    // Nova função para atualizar os dados do cliente
+    const obterModeloDeContratos = async (token) => {
+        console.log("Buscando modelos de contratos...");
+        startLoading();
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_ROUTE}contract`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (response.data) {
+                setModeloDeContratos(response.data);
+                console.log("Modelos de contratos recebidos:", response.data);
+            }
+        } catch (error) {
+            console.error("Erro ao obter modelos de contratos:", error);
+        } finally {
+            stopLoading();
+        }
+    }
+
     const refreshClientData = async () => {
         if (token) {
             const storedId = sessionStorage.getItem('userId');
             if (storedId) {
                 await fetchClientData(token, storedId);
+                await obterModeloDeContratos(token);
             }
         }
     };
@@ -107,6 +129,7 @@ const AuthProvider = ({ children }) => {
             sessionStorage.setItem('authToken', receivedToken);
             sessionStorage.setItem('userId', cpf);
             await fetchClientData(receivedToken, cpf);
+            await obterModeloDeContratos(receivedToken);
             setTimeout(stopLoading, 1200);
             return true;
         } catch (error) {
@@ -127,7 +150,7 @@ const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ token, clientData, clientExtracts, login, logout, isInitialized, refreshClientData }}>
+        <AuthContext.Provider value={{ token, clientData, clientExtracts, login, logout, isInitialized, refreshClientData, modeloDeContratos }}>
             {children}
         </AuthContext.Provider>
     );
